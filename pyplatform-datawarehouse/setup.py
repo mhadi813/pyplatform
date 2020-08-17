@@ -18,8 +18,8 @@ except Exception as error:
 
 
 setup(name='pyplatform-datawarehouse',
-      version='0.0.6',
-      description='Google BigQuery functions',
+      version='2020.8.1',
+      description='Pyplatform-datawarehouse package provides functions for querying, writing and managing data in Google BiqQuery.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
       url='https://github.com/mhadi813/pyplatform',

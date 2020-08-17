@@ -18,8 +18,8 @@ except Exception as error:
 
 
 setup(name='pyplatform-database',
-      version='0.0.6',
-      description='Microsoft Azure SQL functions',
+      version='2020.8.1',
+      description='Pyplatform-database package provides read and write functions for Microsoft SQL database.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
       url='https://github.com/mhadi813/pyplatform',

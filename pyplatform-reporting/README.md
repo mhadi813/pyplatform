@@ -1,13 +1,14 @@
-### Pyplatform-reporting package provides function for working functions for working with Tableau server and hyper datasources.
+### Pyplatform-reporting package provides function for managing  hyper datasources on Tableau server.
 
 ## Installation
 ```python
 pip install pyplatform-reporting
 ```
-## [Authentication](https://github.com/mhadi813/pyplatform)
-Refer to main page for documentation on authentication
 
-## Exploring modules
+## Authentication and environment variables
+Refer to [main page](https://github.com/mhadi813/pyplatform) for documentation on authentication
+
+## Exploring the modules
 ```python
 
 from pyplatform.reporting import *
@@ -25,6 +26,7 @@ hyper_filepath = tableau_server_download_hyper(datasource_name)
 df= hyper_to_df(hyper_filepath)
 
 ```
+
 ### uploading pandas dataframe as hyper datasource on Tableau server
 ```python
 from pyplatform.reporting import *

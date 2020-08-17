@@ -18,8 +18,8 @@ except Exception as error:
 
 
 setup(name='pyplatform-common',
-      version='0.0.11',
-      description='Utility functions',
+      version='2020.8.1',
+      description='Pyplatform-common package provides utility, file management and authentication functions for interacting with APIs and compute services.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
       url='https://github.com/mhadi813/pyplatform',

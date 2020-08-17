@@ -18,8 +18,8 @@ except Exception as error:
 
 
 setup(name='pyplatform-datalake',
-      version='0.0.5',
-      description='Google Cloud Storage and Azure Storage functions for working with unstructured data',
+      version='2020.8.1',
+      description='Pyplatform-datalake package provides functions for Google Cloud Storage and Microsoft Storage services.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
       url='https://github.com/mhadi813/pyplatform',

@@ -1,13 +1,13 @@
-### Pyplatform-datawarehouse package provides functions Google BiqQuery.
+### Pyplatform-datawarehouse package provides functions for querying, writing and managing data in Google BiqQuery.
 
 ## Installation
 ```python
 pip install pyplatform-datawarehouse
 ```
-## [Authentication](https://github.com/mhadi813/pyplatform)
-Refer to main page for documentation on authentication
+## Authentication and environment variables
+Refer to [main page](https://github.com/mhadi813/pyplatform) for documentation on authentication
 
-## Exploring modules
+## Exploring the modules
 ```python
 
 from pyplatform.datawarehouse import *

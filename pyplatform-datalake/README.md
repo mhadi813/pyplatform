@@ -4,10 +4,11 @@
 ```python
 pip install pyplatform-datalake
 ```
-## [Authentication](https://github.com/mhadi813/pyplatform)
-Refer to main page for documentation on authentication
 
-## Exploring modules
+## Authentication and environment variables
+Refer to [main page](https://github.com/mhadi813/pyplatform) for documentation on authentication
+
+## Exploring the modules
 ```python
 
 from pyplatform.datalake import *
@@ -26,6 +27,7 @@ in_mem_file.seek(0)
 dlk.gcs_upload_blob(in_mem_file,bucket_id='bucket',blobname='test.xlsx')
 
 ```
+
 ### downloading and loading trained forecasting model from Google Cloud Storage
 ```python
 import pyplatform.datalake as dlk

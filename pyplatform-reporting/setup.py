@@ -7,11 +7,7 @@ import codecs
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
-# try:
-#     import pypandoc
-#     readme_contents = pypandoc.convert('README.md', 'rst')
-# except(IOError, ImportError):
-#     readme_contents = open('README.md').read()
+
 
 try:
     # https://stackoverflow.com/questions/30700166/python-open-file-error
@@ -23,8 +19,8 @@ except Exception as error:
     sys.stderr.write("Warning: Could not open README.md due %s\n" % error)
 
 setup(name='pyplatform-reporting',
-      version='0.0.5',
-      description='Tableau server functions',
+      version='2020.8.1',
+      description='Pyplatform-reporting package provides function for managing  hyper datasources on Tableau server.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
       url='https://github.com/mhadi813/pyplatform',

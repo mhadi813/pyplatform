@@ -4,10 +4,11 @@
 ```python
 pip install pyplatform-database
 ```
-## [Authentication](https://github.com/mhadi813/pyplatform)
-Refer to main page for documentation on authentication
 
-## Exploring modules
+## Authentication and environment variables
+Refer to [main page](https://github.com/mhadi813/pyplatform) for documentation on authentication
+
+## Exploring the modules
 ```python
 
 from pyplatform.database import *
@@ -23,6 +24,7 @@ df = az_to_df(query)
 df.head()
 
 ```
+
 ### writing pandas dataframe to sql table with non default setting
 ```python
 

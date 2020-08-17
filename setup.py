@@ -16,8 +16,8 @@ except Exception as error:
 
 
 setup(name='pyplatform',
-      version='2020.7.2',
-      description='Pyplatform provides wrapper functions for using Google BigQuery as datawarehouse and analytics platform.The package enables creating data pipelines involving Google Cloud, Microsoft Azure, O365, and Tableau Server as source and destination.',
+      version='2020.8.1',
+      description='Pyplatform is a data analytics platform built around Google BigQuery. This package provides wrapper functions for interacting with cloud services and creating data pipelines using Google Cloud, Microsoft Azure, O365, and Tableau Server as source and destination.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
       url='https://github.com/mhadi813/pyplatform',

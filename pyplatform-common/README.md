@@ -1,13 +1,14 @@
-### Pyplatform-common package provides utility functions and functions for interacting with APIs and compute services.
+### Pyplatform-common package provides utility, file management and authentication functions for interacting with APIs and compute services.
 
 ## Installation
 ```python
 pip install pyplatform-common
 ```
-## [Authentication](https://github.com/mhadi813/pyplatform)
-Refer to main page for documentation on authentication
 
-## Exploring modules
+## Authentication and environment variables
+Refer to [main page](https://github.com/mhadi813/pyplatform) for documentation on authentication
+
+## Exploring the modules
 ```python
 
 from pyplatform.common import *
@@ -32,7 +33,8 @@ response  = requests.request('GET',url,headers=headers)
 response.status_code
 
 ```
-### downloading deployed app code package from pivotal cloud
+
+### downloading deployed application code package from pivotal cloud
 ```python
 
 from pyplatform.common.pivotal_cloud import *
