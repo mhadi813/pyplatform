@@ -1,0 +1,7 @@
+# database = azure sql
+pyodbc
+sqlalchemy
+xlrd
+XlsxWriter
+openpyxl
+pyplatform-common
