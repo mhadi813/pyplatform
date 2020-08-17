@@ -1,4 +1,4 @@
-### Pyplatform provides wrapper functions for using Google BigQuery as datawarehouse and analytics platform.The package enables creating data pipelines involving Google Cloud, Microsoft Azure, O365, and Tableau Server as source and destination.
+### Pyplatform is a data analytics platform built around Google BigQuery. This package provides wrapper functions for interacting with cloud services and creating data pipelines involving Google Cloud, Microsoft Azure, O365, and Tableau Server as source and destination.
 
 ### [the platorm architecture:](https://storage.cloud.google.com/public_images_py/pyplatform_image/pyplatform.png)
 -  enables fast and scalable SQL datawarehousing service
