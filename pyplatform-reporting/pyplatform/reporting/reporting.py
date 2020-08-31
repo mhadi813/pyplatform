@@ -10,10 +10,9 @@ import pantab
 
 
 def tableau_server_get_credentials(**kwargs):
-    """ 
-    Infers and/or updates defaults for tableau server authentication.
-        Defaults comes from credentials.json filepath set as environment 'TABLEAU_SERVER_CREDENTIALS'
-        providing below Keyword Arguments over rides defaults
+    """Infer and/or update defaults for tableau server authentication.
+    Defaults comes from credentials.json filepath set as environment 'TABLEAU_SERVER_CREDENTIALS'
+    providing below Keyword Arguments over rides defaults
 
     Keyword Arguments:
         serverUrl {str} - e.g. 'https://server.company.com'
@@ -60,20 +59,19 @@ def tableau_server_get_credentials(**kwargs):
     return credentials
 
 
-def tableau_server_list_resources(resource='datasources', name='extract.hyper', output_option=None, **credentials):
-    """
-    List tableau server resources.
+def tableau_server_list_resources(resource='datasources', output_option='LIST', name=None, **credentials):
+    """List tableau server resources.
 
     Keyword Arguments:
         resource {str} -- Tableau server resource type 
             supported resource type are ``datasources``,``workbooks``,``views``,``projects``,``users``,``groups`` (default: {'datasources'})
-        name {str} -- name of specific resource to get it's guid  (default: {'extract.hyper'})
-        output_option {[type]} -- change output, if output_option = DICT returns dictionary of all resources with name and id
-                                if output_option = LIST returns list of all resources with attributes  (default: {None}) (default: {None})
+        output_option {str} -- change output, if output_option = DICT returns dictionary of all resources with name and guid
+                                if output_option = LIST returns list of all resources with attributes  (default: {'LIST'})
+        name {str} -- name of specific resource to get it's guid  (default: {None})
         other keyword arguments for ``tableau_server_get_credentials`` method can be passed to change default credentials
 
     Returns:
-        {str, dict, list}
+        {dict, list}
 
     """
 
@@ -100,31 +98,37 @@ def tableau_server_list_resources(resource='datasources', name='extract.hyper', 
                 f"{resource} name didn't match, returing datasources")
             resources, pagination_item = server.datasources.get()
 
-        if output_option == 'DICT':
-            data = {item.name: item.id for item in resources}
-            return data
-        elif output_option == 'LIST':
+        if output_option == 'LIST':
             try:
-                data = [{'name': item.name, 'id': item.id, 'project_name': item.project_name, 'owner_id': item.owner_id,
-                         'updated_at': item.updated_at, 'content_url': item.content_url} for item in resources]
+                if name:
+                    data = [{'name': item.name, 'id': item.id, 'project_name': item.project_name, 'owner_id': item.owner_id,
+                             'updated_at': item.updated_at, 'content_url': item.content_url} for item in resources if item.name==name]
+                else:
+                    data = [{'name': item.name, 'id': item.id, 'project_name': item.project_name, 'owner_id': item.owner_id,
+                             'updated_at': item.updated_at, 'content_url': item.content_url} for item in resources]
             except:
-                #                 logging.warning(f"{resource} does not have the required attributes")
-                data = {item.name: item.id for item in resources}
+                logging.info(f"list of name and GUID of {resource}: \n")
+                if name:
+                    data = [{item.name: item.id} for item in resources if item.name==name]
+                else:
+                    data = [{item.name: item.id} for item in resources]
             return data
 
         else:
-            data = [item.id for item in resources if item.name == name]
+            if name:
+                data = {item.name: item.id for item in resources if item.name==name}
+            else:
+                data = {item.name: item.id for item in resources}
 
-        if len(data) >= 1:
-            return data[0]
+        if data:
+            return data
         else:
             logging.warning(
-                f'{name} not found in {resource}. Below is all {resource} name and id {{item.name: item.id for item in resources}}')
+                f'{name} not found in {resource}. Below is all {resource} name and id {{item.name: item.id for item in resources}} ')
 
 
 def tableau_server_upload_hyper(hyper_file, **kwargs):
-    """
-    Publishes local extract.hyper file to tableau server.
+    """Publishe local extract.hyper file to tableau server.
 
     Arguments:
         hyper_file {str} -- filepath of extract.hyper or .tde to be published
@@ -223,8 +227,7 @@ def tableau_server_upload_hyper(hyper_file, **kwargs):
 
 
 def tableau_server_download_hyper(datasource_name, filepath=None, output_option='hyper', **kwargs):
-    """ 
-    Download tdsx/hyper datasources from tableau server.
+    """Download tdsx/hyper datasources from tableau server.
 
     Arguments:
         datasource_name {str} -- datasource name without file extention
@@ -257,8 +260,7 @@ def tableau_server_download_hyper(datasource_name, filepath=None, output_option=
 
 
 def unzip_tdsx(tdsx_filepath, hyper_filepath=None):
-    """ 
-    Extract extract.hyper from tdsx.
+    """Extract extract.hyper from tdsx.
 
     Arguments:
         tdsx_filepath {str} -- filepath for tdsx
@@ -285,8 +287,7 @@ def unzip_tdsx(tdsx_filepath, hyper_filepath=None):
 
 
 def df_to_hyper(df, filepath=None, table_name=None):
-    """
-    Create hyper file from pandas.DataFrame on local drive.
+    """Create hyper file from pandas.DataFrame on local drive.
 
     Arguments:
         df {pandas.DataFrame}
@@ -314,8 +315,7 @@ def df_to_hyper(df, filepath=None, table_name=None):
 
 
 def hyper_to_df(hyper_filepath, table_name=None):
-    """
-    Create pandas.DataFrame form hyper file.
+    """Create pandas.DataFrame form hyper file.
 
     Arguments:
         hyper_filepath {str} -- filepath of hyper file
@@ -332,8 +332,7 @@ def hyper_to_df(hyper_filepath, table_name=None):
 
 
 def __tableau_auth(credentials):
-    """ 
-    Instantiates tableau auth.
+    """Instantiates tableau server client (TSC) authentication.
 
     Arguments:
         credentials {dict} -- dict containing key: value pairs for authentication
@@ -352,8 +351,7 @@ def __tableau_auth(credentials):
 
 
 def __find_datasource_id_by_name(name='extract.hyper', output_option=None, **credentials):
-    """ 
-    Find datasource_id on tableau server by name.
+    """Find datasource_id on tableau server by name.
 
     Keyword Arguments:
         name {str} -- datasource name (default: {'extract.hyper'})
@@ -395,7 +393,7 @@ def __find_datasource_id_by_name(name='extract.hyper', output_option=None, **cre
 
 def __parse_datasource_url(datasource_url):
     # TODO datasource_id not part of url at this time ref: https://github.com/tableau/server-client-python/issues/268
-    """ decomposes datasource url into components
+    """Decomposes datasource url into components.
 
     Arguments:
         datasource_url {str} -- url of extract.hyper file on tableau server e.g. 'https://server.company.com/#/site/contentUrl/project/163271/askData'
@@ -411,7 +409,7 @@ def __parse_datasource_url(datasource_url):
 
 def __make_datasource_url(datasource_id, **kwargs):
     # TODO datasource_id not part of url at this time ref https://github.com/tableau/server-client-python/issues/268
-    """ creates datasource url from datasource_id
+    """Creates datasource url from datasource_id
     Arguments:
         datasource_id {str}
 

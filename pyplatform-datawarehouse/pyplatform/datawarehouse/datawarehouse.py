@@ -75,7 +75,7 @@ def bq_to_df(sql, client=None, **job_config):
         elif len(job_id) > 1:
             df = client.get_job(job_id[-1]).to_dataframe()
             # job_info = bq_get_job_info(job,client=client) #dependency
-            logging.waring(
+            logging.warning(
                 " multi select stored procedure returns data for the last SELECT statement only")
             date_columns = get_date_columns(job)
 

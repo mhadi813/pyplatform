@@ -20,7 +20,7 @@ show_me()
 ```python
 from pyplatform.reporting import *
 
-tableau_server_list_resources(resource='datasources',output_option='DICT')
+print(tableau_server_list_resources())
 datasource_name = 'sample superstore'
 hyper_filepath = tableau_server_download_hyper(datasource_name)
 df= hyper_to_df(hyper_filepath)

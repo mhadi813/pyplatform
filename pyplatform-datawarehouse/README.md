@@ -29,7 +29,7 @@ df = dw.bq_to_df(sql)
 df.head()
 
 ```
-### writing dataframe BigQuery table
+### writing dataframe to BigQuery table
 ```python
 import pyplatform.datawarehouse as dw
 # df #TODO create dataframe as source
