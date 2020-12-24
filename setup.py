@@ -16,7 +16,7 @@ except Exception as error:
 
 
 setup(name='pyplatform',
-      version='2020.8.1',
+      version='2020.12.1',
       description='Pyplatform is a data analytics platform built around Google BigQuery. This package provides wrapper functions for interacting with cloud services and creating data pipelines using Google Cloud, Microsoft Azure, O365, and Tableau Server as source and destination.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",
@@ -35,5 +35,5 @@ setup(name='pyplatform',
       ],
       install_requires=['pyplatform-datawarehouse', 'pyplatform-database',
                         'pyplatform-datalake', 'pyplatform-reporting', 'pyplatform-common'],
-      keywords="google bigquery cloud functions storage jupyterlab python SQL",
+      keywords="google bigquery cloud functions storage python SQL",
       zip_safe=False)

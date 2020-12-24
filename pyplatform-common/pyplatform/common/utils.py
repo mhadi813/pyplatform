@@ -192,18 +192,20 @@ def gcp_get_auth_header(scope='https://www.googleapis.com/auth/cloud-platform', 
             return response
 
 
-def secretmanager_access_secrets(project_id=None, name=None, output_option='FILE', credentials=None):
-    """Set ``secret`` name from Google Secret Manager as environment variable or return dict with ``name`` as key and ``data`` and value.
+def secretmanager_access_secrets(name, project_id=None, output_option='DICT', credentials=None):
+    """Return dict with secret ``name`` as key and ``data`` and value or Set ``secret`` name from Google Secret Manager as environment variable.
 
     documentatioin: https://cloud.google.com/secret-manager/docs/reference/rest/v1/projects.secrets.versions/access
 
+    Arguments:
+        name {str,list} -- name or list of names of secrets
+
     Keyword Arguments:
         project_id {str} -- project_id hosting the secrets (default: {None})
-        name {str,list} -- name or list of names of secrets. If not provided, the function attampts to retrieve all secrets (default: {None})
         output_option {str,dict} -- output format of secrets.
                 {{'name': 'env_variable'}: 'downloads secrets ``data`` to a temp file, sets ``env_variable`` for each secret ``name`` pointing to the temp file path' \
                 'FILE':'downloads secrets ``data`` to a temp file, sets credential ``name`` as env variable pointing to the temp file path' \
-                'DICT':'returns secrets as dict with ``name`` as key and ``data`` as value'}. (default: {'FILE'})
+                'DICT':'returns secrets as dict with ``name`` as key and ``data`` as value'}. (default: {'DICT'})
 
         Recommended secret names for each platform:
             {'gpc':'GOOGLE_APPLICATION_CREDENTIALS'
@@ -266,7 +268,7 @@ def secretmanager_access_secrets(project_id=None, name=None, output_option='FILE
                 data_64 = response.json()['payload']['data']
                 value = base64.b64decode(data_64)
 
-                if output_option != 'DICT':
+                if output_option == 'FILE':
                     if not os.path.exists('temp'):
                         os.mkdir('temp')
                     temp_cred = os.path.join(
@@ -318,12 +320,12 @@ def gcs_reader(gcs_uri, auth_header=None, output_option='TEXT'):
     Returns:
         {str, requests.response, requests.response.content, requests.response.json, requests.response.text} 
     """
-    from urllib.parse import quote_plus
+    from urllib.parse import quote
     if not auth_header:
         auth_header = gcp_get_auth_header(scope='https://www.googleapis.com/auth/devstorage.read_only')  # dependency
 
     bucket = gcs_uri[5:].split('/')[0]
-    blob = quote_plus('/'.join(gcs_uri[5:].split('/')[1:]))
+    blob = quote('/'.join(gcs_uri[5:].split('/')[1:]),safe='')
 
     url = f'https://storage.googleapis.com/storage/v1/b/{bucket}/o/{blob}'
 
@@ -358,3 +360,36 @@ def make_requirements_txt(project_dir='.'):
         project_dir = os.path.dirname(project_dir)
 #         os.chdir(script_path)
     return os.system(f"pipreqs {project_dir}")
+
+def gcf_authenticated_trigger(url, timeout=0.1):
+    """Trigger Google Cloud Function with authenticated GET request
+    Note: this will only work in Google Cloud environment (not local machines)
+
+    Arguments:
+        url {str} -- url of other gcf e.g.  'https://us-central1-custom-ground-236517.cloudfunctions.net/hello_protected'
+
+    Keyword Arguments:
+        timeout {float} -- response timeout in second (default: {0.1} doesn't wait for response)
+
+    Returns:
+        flask.response -- retruned from target function if timeout is long enough
+    """
+
+    from requests import get, exceptions
+    metadata_server_token_url = 'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience='
+
+    token_request_url = metadata_server_token_url + url
+    token_request_headers = {'Metadata-Flavor': 'Google'}
+    token_response = get(
+        token_request_url, headers=token_request_headers)
+    jwt = token_response.content.decode("utf-8")
+
+    # Provide the token in the request to the receiving function
+    auth_headers = {'Authorization': f'bearer {jwt}'}
+    try:
+        function_response = get(
+            url, headers=auth_headers, timeout=timeout)
+        return function_response.content
+    except exceptions.ReadTimeout:
+        print(f'triggered gcf: {url}')
+        return f'triggered gcf: {url}'

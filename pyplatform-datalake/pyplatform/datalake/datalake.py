@@ -46,6 +46,11 @@ def gcs_list_blobs(bucket_id=None, storage_client=None, folder_name=None, file_e
         list -- list of blob matching folder_name and file_extension criteria
 
     """
+    if not storage_client:
+        logging.debug(
+            "instantiating storage client from defualt environment variable")
+        storage_client = storage.Client()
+
     if not bucket_id:
         bucket_id = os.environ.get("STORAGE_BUCKET")
     if not folder_name:
@@ -308,14 +313,14 @@ def gcs_del_storage_folder(bucket_id, folder=None, blob_name=None, storage_clien
             blob.delete()
             logging.info("Blob {} deleted.".format(blob_name))
         except Exception as err:
-            logging.info(str(err.message))
+            logging.info(str(err))
         return
 
     if folder:
         try:
             bucket.delete_blobs(blobs=bucket.list_blobs(prefix=folder))
         except Exception as err:
-            logging.error(str(err.message))
+            logging.error(str(err))
 
 
 def azure_get_credentials(**kwargs):
@@ -484,7 +489,8 @@ def azure_storage_upload_blob(content, blob_name=None, **credentials):
 
 
 def __parse_storage_url(blob_url):
-    account_name, container_name, blob_name = blob_url[8:].split('/')
+    url_path = blob_url[8:].split('/')
+    account_name, container_name, blob_name = url_path[0], url_path[1], '/'.join(url_path[2:])
     account_name = account_name.split('.')[0]
     return account_name, container_name, blob_name
 

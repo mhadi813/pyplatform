@@ -63,6 +63,32 @@ def reportingMonthCurrent():
     """Return current month in yyyymm format from local system time as string."""
     return datetime.datetime.now().strftime("%Y%m")
 
+def FY(date=None):
+    """Return current Financial Year or extract FY from date. Financail year starts in April.
+    date {datetime, str} -- datetime or ISO format date string (default: None)
+    
+    Returns:
+    {str} - FY``YY`` format string
+    
+    Examples:
+        FY("2020-04-01")
+        >>> FY20
+        
+        t = datetime.datetime(year=2020,month=3,day=31)
+        FY(t)
+        >>> FY21
+    """
+    if not date:
+        now =datetime.datetime.utcnow()
+    elif isinstance(date,str):
+        now = datetime.datetime.fromisoformat(date)
+    else:
+        now = date
+    
+    if now.month <= 3:
+        return f"FY{str(now.year)[-2:]}"
+    else:
+        return f"FY{str(now.year + 1)[-2:]}"
 
 def reportingMonth(cutoffDay=5):
     """Return lastest closed reporting month (usually previous month) in yyyymm format from local system time.
@@ -140,71 +166,3 @@ def scanDate(num_days=45):
     sdate = datetime.datetime.now(tz=pytz.timezone(
         'America/New_York')) - datetime.timedelta(days=num_days)
     return sdate.strftime("%Y-%m-%d")
-
-
-def datetime_fucs(date_time=None, timezone='UTC', truncate_to=None, output_option=None):
-    """Return current timestamp, add/translate timezone, formats datetime and converts datetime to UNIX timestamp and int/float to datetime.Reference code for working with datetime objects.
-
-    Keyword Arguments:
-        date_time {datetime.datetime or int or float} -- for conversion to UNIX supply datetime, for conversion to datetime supply int or float (default: {None})
-        timezone {str} -- pytz.timezone name e.g. (default: {'UTC'})
-        truncate_to {str} -- {'second','day'} changes datetime resolution to specified unit (default: {None})
-        output_option {str} -- {'UNIX','DATETIME'} for converstion between UNIX and datetime.datetime (default: {None})
-
-    Examples:
-    utc_now = datetime_fucs() # utc timestamp
-
-    est_now = datetime_fucs(date_time=utc_now, timezone='America/New_York') # translate time_zone
-
-    datetime_fucs(date_time=est_now, truncate_to='second').isoformat() # adjust resolution
-
-    datetime_fucs(truncate_to='second' ,output_option='UNIX') # unix timestamp to second resolution
-
-    datetime_fucs(truncate_to='second' ,output_option='UNIX') # unix timestamp to second resolution
-
-    # return trip:
-    utc_now = datetime_fucs() # datetime
-    unix_now = datetime_fucs(date_time=utc_now, output_option='UNIX')  # float
-    rtm = datetime_fucs(date_time=unix_now,output_option='DATETIME') # back to datetime
-    utc_now  - rtm # timedelta => 0
-
-    """
-    if not date_time:
-        date_time = datetime.datetime.now(pytz.timezone(timezone))
-        if timezone == 'UTC' and truncate_to == None and output_option == None:
-            return date_time
-
-    if timezone != 'UTC' and isinstance(date_time, datetime.datetime):
-        date_time = date_time.replace(tzinfo=pytz.timezone(timezone))
-
-        if truncate_to == None and output_option == None:
-            return date_time
-    else:
-        timezone = pytz.timezone(timezone)
-
-    if truncate_to:
-        if truncate_to == 'second':
-            date_time = date_time.replace(microsecond=0)
-        else:  # truncate_to == 'day'
-            date_time = datetime.date(
-                date_time.year, date_time.month, date_time.day)
-
-    if output_option:
-        if output_option == 'UNIX':
-            if isinstance(date_time, datetime.datetime):
-                return date_time.timestamp()
-            elif str(type(date_time)) == "<class 'pandas._libs.tslibs.timestamps.Timestamp'>":
-                #                 print("pd.Timestamp class")
-                return (date_time - pd.Timestamp("1970-01-01", tz=new_timezone)) // pd.Timedelta('1s')
-            else:
-                #                 print('assume datetime.date')
-                return time.mktime(date_time.timetuple())
-
-        elif output_option == 'DATETIME':
-            if isinstance(date_time, int) or isinstance(date_time, float):
-                #                 print('unix to datetime')
-                return datetime.datetime.fromtimestamp(date_time, tz=timezone)
-            else:
-                return pd.to_datetime(date_time, unit='s', origin='unix')
-    else:
-        return date_time

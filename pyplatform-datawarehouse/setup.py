@@ -18,7 +18,7 @@ except Exception as error:
 
 
 setup(name='pyplatform-datawarehouse',
-      version='2020.8.2',
+      version='2020.12.1',
       description='Pyplatform-datawarehouse package provides functions for querying, writing and managing data in Google BiqQuery.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",

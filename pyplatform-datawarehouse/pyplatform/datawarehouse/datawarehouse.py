@@ -611,6 +611,7 @@ def create_bq_job_id(description=None):
         description = description.replace(' ', '_')
         job_id = est_now_str + f"_{description}"
     else:
+        client = bigquery.Client()
         agent = client.get_service_account_email()  # client from outer scope
         job_id = est_now_str + f"_{agent.split('@')[0]}"
     return job_id
@@ -693,15 +694,25 @@ def get_table_schema_from_df(df, bq_dtypes=None, output_options='OBJECT'):
         if bq_dtypes:
             for field_name, dtype in bq_dtypes.items():
                 for field in output:
-                    if field.get('name') == field_name:
-                        if field.get('type') == 'RECORD':
-                            children_fields = field.get('fields')
-                            for child_field in children_fields:
-                                if child_field.get('name') in dtype.keys():
-                                    child_field['type'] = dtype[child_field.get(
-                                        'name')].upper()
-                        else:
+                    if isinstance(dtype,dict):
+                        # update nested fields
+                        if field.get('name') == field_name:
+                            if field.get('type') == 'RECORD':
+                                children_fields = field.get('fields')
+                                for child_field in children_fields:
+                                    if child_field.get('name') in dtype.keys():
+                                        child_field['type'] = dtype[child_field.get(
+                                            'name')].upper()
+                            else:
+                                field['type'] = dtype.upper()
+                    else:
+                        # update normal fields
+                        if field.get('name') == field_name:
                             field['type'] = dtype.upper()
+                            try:
+                                del field['fields']
+                            except:
+                                pass
         return [bigquery.schema.SchemaField.from_api_repr(field) for field in output]
 
 
@@ -1195,7 +1206,7 @@ def bq_copy_table(source_table_id, destination_table_id, write_mode='WRITE_EMPTY
             "instantiating bigquery client from defualt environment variable")
         client = bigquery.Client()
 
-    job_config = bigquery.bigquery.CopyJobConfig(**job_config)
+    job_config = bigquery.CopyJobConfig(**job_config)
     job_config.write_disposition = write_mode
     job = client.copy_table(
         source_table_id, destination_table_id, job_config=job_config, job_id=job_id)

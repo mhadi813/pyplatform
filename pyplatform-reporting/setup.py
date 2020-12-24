@@ -19,7 +19,7 @@ except Exception as error:
     sys.stderr.write("Warning: Could not open README.md due %s\n" % error)
 
 setup(name='pyplatform-reporting',
-      version='2020.8.2',
+      version='2020.12.1',
       description='Pyplatform-reporting package provides function for managing  hyper datasources on Tableau server.',
       long_description=readme_contents,
       long_description_content_type="text/markdown",

@@ -149,7 +149,7 @@ def tableau_server_upload_hyper(hyper_file, **kwargs):
     server = TSC.Server(credentials.get('serverUrl'))
     project = credentials.get('project')
 
-    logging.debug(f'supplied keyword args: {kwargs}')
+    # logging.debug(f'supplied keyword args: {kwargs}')
     with server.auth.sign_in(tableau_auth):
         assert server.is_signed_in() == True
 
